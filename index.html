@@ -2,18 +2,12 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>K-on! System Gateway</title>
+  <title>K-on! Gateway</title>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </head>
-<body style="text-align:center; padding-top:100px; font-family:sans-serif; background-color:#f4f4f4; color:#333;">
-  <div id="loading">
-    <p>部室予約システムを起動中...</p>
-    <div style="margin: 20px auto; width: 40px; height: 40px; border: 4px solid #ddd; border-top: 4px solid #3498db; border-radius: 50%; animation: spin 1s linear infinite;"></div>
-  </div>
-  <style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>
-
+<body style="text-align:center; padding-top:100px; font-family:sans-serif; background-color:#f4f4f4;">
+  <p>起動中...</p>
   <script>
-    // 提供されたIDとURLを使用
     const LIFF_ID = "2008880240-ln3wSnTk"; 
     const GAS_URL = "https://script.google.com/macros/s/AKfycbx0gQXbe86ygAkaqhpHzlDe6DTM7lOi-GTK-MAXEQjXD6F0ox_PdJ29SfQingCOPl70Qw/exec";
 
@@ -23,11 +17,11 @@
           liff.login();
         } else {
           liff.getProfile().then(p => {
-            // .replace を使うことで GitHub ページを履歴に残さず GAS へ移動します
+            // 履歴を残さずGASへ飛ばす
             window.location.replace(GAS_URL + "?uid=" + p.userId);
-          }).catch(e => document.write("Profile Error: " + e));
+          });
         }
-      }).catch(err => document.write("LIFF Error: " + err));
+      }).catch(err => document.write(err));
     };
   </script>
 </body>
