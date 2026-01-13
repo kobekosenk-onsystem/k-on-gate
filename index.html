@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>K-on! System Loading</title>
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+</head>
+<body>
+  <div style="text-align:center; padding-top:50px; font-family:sans-serif;">
+    <p>ログインを確認中...</p>
+  </div>
+  <script>
+    // 設定値
+    const LIFF_ID = "2008852363-6TH66Alr"; 
+    const GAS_URL = "https://script.google.com/macros/s/1_vvG-rCbXpVGxB7jLKU-rVzAk854Mfx5jbhX0EqDn28/exec";
+
+    window.onload = function() {
+      liff.init({ liffId: LIFF_ID }).then(() => {
+        if (!liff.isLoggedIn()) {
+          liff.login(); // ログインしていなければLINEのログイン画面へ
+        } else {
+          liff.getProfile().then(p => {
+            // LINE IDを取得したら、GASのURLにパラメータとして付けてリダイレクト
+            // ここで Google のログイン壁をバイパスします
+            window.location.replace(GAS_URL + "?uid=" + p.userId);
+          });
+        }
+      }).catch(err => document.write("LIFF Error: " + err));
+    };
+  </script>
+</body>
+</html>
