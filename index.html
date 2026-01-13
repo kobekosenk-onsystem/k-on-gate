@@ -5,14 +5,15 @@
   <title>K-on! Gateway</title>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </head>
-<body style="text-align:center; padding-top:100px; font-family:sans-serif; background-color:#f4f4f4; color:#333;">
-  <div id="status">
-    <p>部室予約システムを起動中...</p>
-    <div style="margin: 20px auto; width: 40px; height: 40px; border: 4px solid #ddd; border-top: 4px solid #3498db; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+<body style="text-align:center; padding-top:100px; font-family:sans-serif; background-color:#f4f4f4;">
+  <div id="loading-area">
+    <p>軽音部部室予約システムを起動中...</p>
+    <div style="margin: 20px auto; width: 30px; height: 30px; border: 3px solid #ddd; border-top: 3px solid #3498db; border-radius: 50%; animation: spin 1s linear infinite;"></div>
   </div>
-  <div id="retry" style="display:none;">
-    <p>起動に時間がかかっています</p>
-    <button onclick="location.reload()" style="padding:10px 20px;">再読み込み</button>
+  
+  <div id="error-area" style="display:none; padding: 20px;">
+    <p>自動起動に失敗しました</p>
+    <button onclick="location.reload()" style="padding:10px 20px;">再試行</button>
   </div>
 
   <style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>
@@ -21,8 +22,12 @@
     const LIFF_ID = "2008880240-ln3wSnTk"; 
     const GAS_URL = "https://script.google.com/macros/s/AKfycbx0gQXbe86ygAkaqhpHzlDe6DTM7lOi-GTK-MAXEQjXD6F0ox_PdJ29SfQingCOPl70Qw/exec";
 
-    // 5秒経っても動かない場合にボタンを出す
-    setTimeout(() => { document.getElementById('retry').style.display = 'block'; }, 5000);
+    // 6秒経っても動かない場合はエラー表示
+    setTimeout(() => {
+      if(document.getElementById('loading-area').style.display !== 'none') {
+        document.getElementById('error-area').style.display = 'block';
+      }
+    }, 6000);
 
     window.onload = function() {
       liff.init({ liffId: LIFF_ID }).then(() => {
@@ -30,14 +35,12 @@
           liff.login();
         } else {
           liff.getProfile().then(p => {
-            // 履歴を上書きしてGASへ移動
+            // 履歴を上書き（replace）してGASへ飛ばす
             window.location.replace(GAS_URL + "?uid=" + p.userId);
-          }).catch(e => {
-            document.getElementById('status').innerHTML = "プロフィール取得失敗: " + e;
           });
         }
       }).catch(err => {
-        document.getElementById('status').innerHTML = "LIFF初期化失敗: " + err + "<br>LINE DevelopersでこのGitHubのURLが『Endpoint URL』に登録されているか確認してください。";
+        document.getElementById('loading-area').innerHTML = "起動エラー: " + err;
       });
     };
   </script>
