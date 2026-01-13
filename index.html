@@ -8,22 +8,18 @@
 <body style="text-align:center; padding-top:50px; font-family:sans-serif; background-color:#f4f4f4;">
   <p>部室予約システムを起動中...</p>
   <script>
-    // 提供されたIDとURLを固定
     const LIFF_ID = "2008880240-ln3wSnTk"; 
     const GAS_URL = "https://script.google.com/macros/s/AKfycbx0gQXbe86ygAkaqhpHzlDe6DTM7lOi-GTK-MAXEQjXD6F0ox_PdJ29SfQingCOPl70Qw/exec";
-
+  
     window.onload = function() {
       liff.init({ liffId: LIFF_ID }).then(() => {
-        if (!liff.isLoggedIn()) {
-          liff.login();
-        } else {
+        if (!liff.isLoggedIn()) { liff.login(); }
+        else {
           liff.getProfile().then(p => {
-            // GASへリダイレクト（location.replaceで履歴を残さない）
+            // .href ではなく .replace を使うのが「戻れるようにする」コツです
             window.location.replace(GAS_URL + "?uid=" + p.userId);
           });
         }
-      }).catch(err => {
-        document.write("LIFF初期化エラー: " + err);
       });
     };
   </script>
